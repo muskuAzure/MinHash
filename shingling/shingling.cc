@@ -1,7 +1,5 @@
 #include "shingling.hpp"
 
-string padString(string text, int kSize);
-
 /* 
   +1 how to deal with shingl that does not have enough character. 
      HERE: use special char to pad it "$"
@@ -10,18 +8,41 @@ string padString(string text, int kSize);
     if it better. 
     
 */
+vector<long long> stringSignatureSetup(const set<string>& shingleSet) {
+  vector<long long>signatureVector{};
+  auto it{shingleSet.begin()};
+  long long signature{};
+  
+  int i{(*it).length()};
+  long long front{(*it).front()*static_cast<long long>(pow(BASE,i-1))};
+  // implement hold first char for delete
+  for( auto character : *it) {
+    signature+=character * static_cast<long long>(pow(BASE,--i)) % PRIME;
+  }
 
-set<string> shinglText(const string& text, int kSize) {
+  signatureVector.push_back(signature);
+  it++;
 
-  set<string> setOfshing;
+  // rolling hash 
+  for(;it!=shingleSet.end();it++){
+    signature=(signature-front + (*it).back()) * BASE;
+    front=pow(BASE,(*it).length()-1) * (*it).front();
+  }
+
+  return signatureVector;
+}
+
+
+vector<long long> shinglingText(const string& text, int kSize) {
+
+  set<string> setOfshingle;
 
   for(long long startIndex{};startIndex<text.size();startIndex+=1){
     string shingeler{padString(text.substr(startIndex, kSize), kSize)};
-    setOfshing.insert(shingeler);
+    setOfshingle.insert(shingeler);
   }
 
-  return setOfshing;
-
+  return stringSignatureSetup(setOfshingle);
 }
 
 // i don't do original string edit becasue i want cleaner code :) (bite me!!)
@@ -32,5 +53,4 @@ string padString(string text, int kSize) {
 
   return text;
 }
-
 

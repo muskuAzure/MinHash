@@ -5,7 +5,6 @@
 #include <sstream>
 
 #include "utility.hpp"
-using namespace std;
 
 /*
   - 1 Not support UTF-8 right now

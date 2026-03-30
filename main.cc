@@ -1,10 +1,12 @@
 /*
   - 1 cannot handle UTF-8
+  - 2 need a way to find optimal shingl size
 */
 
 #include "shingling.hpp"
 #include "inputHandler.hpp"
 #include "utility.hpp"
+#include "hash_handler.hpp"
 
 using namespace std;
 
@@ -15,17 +17,30 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
-  int shingSize{stoi(argv[1])}, numberOfText{stoi(argv[2])};
+  long long shingSize{stoi(argv[1])}, numberOfText{stoi(argv[2])};
 
-  vector<set<string> > shinglOfEachDocument;
-  set<string> vocab;
+  vector<vector<long long>> shinglOfEachDocument;
+  long long maxNumber{};
 
   // run O(n), numberOfDocumetn into hash 
-  for (int i{};i<numberOfText;i++){
-    set<string> shingl{shinglText(readFile(argv[3+i]), shingSize)};
+  // optimzed this later
+  for (long long i{};i<numberOfText;i++){
+    vector<long long> shingl{shinglingText(readFile(argv[3+i]), shingSize)};
     shinglOfEachDocument.push_back(shingl);
-    vocab.merge(shingl);
   }
+
+  // algorithm for optimized k value 
+
+  // how large shoukd my hash table be 
+  vector<long long> collsionBook(shinglOfEachDocument.size());
+  applyMinHash(shinglOfEachDocument, collsionBook);
+  
+
+
+
+  
+
+
   
 
   return EXIT_SUCCESS;
