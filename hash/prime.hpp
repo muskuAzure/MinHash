@@ -1,5 +1,5 @@
-#ifndef PRIME
-#define PRIME
+#ifndef PRIME_HPP
+#define PRIME_HPP
 
 #include "utility.hpp"
 

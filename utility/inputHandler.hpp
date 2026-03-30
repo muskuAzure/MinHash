@@ -6,9 +6,7 @@
 
 #include "utility.hpp"
 
-/*
-  - 1 Not support UTF-8 right now
-*/
+using namespace std;
 
 string readFile(const string& path);
 

@@ -1,17 +1,17 @@
 CXX = clang++
-CXXFLAGS = -std=c++20 -Wall -I./utility -I./shingling -I./encoder -I./hash
+CXXFLAGS = -std=c++20 -Wall -I./utility -I./shingling -I./hash
 SRCS = main.cc \
   		shingling/shingling.cc \
 			utility/inputHandler.cc \
-			encoder/encoder.cc \ 
-			hash/hash_handler.cc \ 
+			hash/hash_handler.cc \
 			hash/prime.cc
 TARGET = LSH
 TEXTS = $(wildcard text/*.txt)
 SHING_SIZE ?= 2
+NUM_HASHES ?= 100
 
 run: $(TARGET)
-	./$(TARGET) $(SHING_SIZE) $(words $(TEXTS)) $(TEXTS)
+	./$(TARGET) $(SHING_SIZE) $(NUM_HASHES) $(TEXTS)
 
 $(TARGET): $(SRCS)
 	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET)

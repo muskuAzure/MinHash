@@ -1,0 +1,5 @@
+text/
+*.env
+build/
+.DS_Store
+LSH

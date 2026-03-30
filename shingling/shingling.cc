@@ -1,56 +1,29 @@
+#include <unordered_set>
 #include "shingling.hpp"
-
-/* 
-  +1 how to deal with shingl that does not have enough character. 
-     HERE: use special char to pad it "$"
-  -2 i will just use substr instead of string view for eash of coding
-    if i have time i will come back and make another version and test
-    if it better. 
-    
-*/
-vector<long long> stringSignatureSetup(const set<string>& shingleSet) {
-  vector<long long>signatureVector{};
-  auto it{shingleSet.begin()};
-  long long signature{};
-  
-  int i{(*it).length()};
-  long long front{(*it).front()*static_cast<long long>(pow(BASE,i-1))};
-  // implement hold first char for delete
-  for( auto character : *it) {
-    signature+=character * static_cast<long long>(pow(BASE,--i)) % PRIME;
-  }
-
-  signatureVector.push_back(signature);
-  it++;
-
-  // rolling hash 
-  for(;it!=shingleSet.end();it++){
-    signature=(signature-front + (*it).back()) * BASE;
-    front=pow(BASE,(*it).length()-1) * (*it).front();
-  }
-
-  return signatureVector;
-}
-
 
 vector<long long> shinglingText(const string& text, int kSize) {
 
-  set<string> setOfshingle;
+  if ((int)text.size() < kSize) return {};
 
-  for(long long startIndex{};startIndex<text.size();startIndex+=1){
-    string shingeler{padString(text.substr(startIndex, kSize), kSize)};
-    setOfshingle.insert(shingeler);
+  unordered_set<long long> shingleSet;
+
+  long long basePow{1};
+  for (int i{}; i < kSize - 1; i++) {
+    basePow = static_cast<long long>((__uint128_t)basePow * BASE % PRIME);
   }
 
-  return stringSignatureSetup(setOfshingle);
+  long long h{};
+  for (int i{}; i < kSize; i++) {
+    h = static_cast<long long>((__uint128_t)h * BASE + (unsigned char)text[i]) % PRIME;
+  }
+  shingleSet.insert(h);
+
+  for (int i{kSize}; i < (int)text.size(); i++) {
+    long long drop = static_cast<long long>((__uint128_t)basePow * (unsigned char)text[i - kSize] % PRIME);
+    h = (h - drop + PRIME) % PRIME;
+    h = static_cast<long long>((__uint128_t)h * BASE + (unsigned char)text[i]) % PRIME;
+    shingleSet.insert(h);
+  }
+
+  return vector<long long>(shingleSet.begin(), shingleSet.end());
 }
-
-// i don't do original string edit becasue i want cleaner code :) (bite me!!)
-string padString(string text, int kSize) {
-
-  int remaing{ (kSize - static_cast<int>(text.size()) % kSize) % kSize};
-  text.append(remaing, PAD_CHAR);
-
-  return text;
-}
-
